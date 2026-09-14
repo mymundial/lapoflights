@@ -1966,119 +1966,321 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 
 
-/* Pass 6.67 — MC-02 Performance Scan: preserve 2 × 3 scan banks, compact vertically */
+/* Pass 6.69 — challenge header standard + MC-02 compact diagnostic console */
+:root{
+  --challenge-title-size:27px;
+  --challenge-support-size:16px;
+  --challenge-support-line:22px;
+}
+
+/* Challenge typography is a fixed design-system rule across every mini-game.
+   Only the interactive game area is allowed to compress on shorter screens. */
+.mission-head h1,
+.diagnostics-head h1{
+  font-size:var(--challenge-title-size)!important;
+  line-height:1.05!important;
+  margin:4px 0 5px!important;
+}
+.mission-head p.support-copy,
+.diagnostics-head p.support-copy{
+  font-size:var(--challenge-support-size)!important;
+  line-height:var(--challenge-support-line)!important;
+  max-width:380px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+@media(max-height:740px), (max-height:660px){
+  .mission-head h1,
+  .diagnostics-head h1{font-size:var(--challenge-title-size)!important;line-height:1.05!important}
+  .mission-head p.support-copy,
+  .diagnostics-head p.support-copy{font-size:var(--challenge-support-size)!important;line-height:var(--challenge-support-line)!important}
+}
+
+/* MC-02 keeps the established 2 × 3 bank structure. The console now hugs its
+   content rather than stretching to consume every spare pixel on the page. */
 .mission-diagnostics .diagnostics-head{
-  margin-bottom:5px;
-  padding-top:3px!important;
-  padding-bottom:5px!important;
+  flex:0 0 auto;
+  margin-bottom:8px;
+  padding-top:4px!important;
+  padding-bottom:6px!important;
+  text-align:center;
 }
-.mission-diagnostics .diagnostics-head .meta{min-height:20px}
+.mission-diagnostics .diagnostics-head .meta{min-height:22px;text-align:left}
 .mission-diagnostics .diagnostics-head .linkbtn{padding:4px 6px}
-.mission-diagnostics .diagnostics-brand{margin:1px auto 0}
-.mission-diagnostics .diagnostics-brand img{width:60px;max-width:22vw}
-.mission-diagnostics .diagnostics-head h1{
-  margin:1px 0 2px;
-  font-size:24px;
-  line-height:1;
+.mission-diagnostics .diagnostics-brand{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  min-height:34px;
+  margin:4px auto 2px;
+  text-align:center;
 }
-.mission-diagnostics .diagnostics-head p.support-copy{
-  font-size:13px;
-  line-height:17px;
-  max-width:345px;
+.mission-diagnostics .diagnostics-brand img{
+  display:block;
+  width:104px;
+  height:auto!important;
+  max-width:104px;
+  max-height:none;
+  aspect-ratio:600 / 201;
+  object-fit:contain;
+  margin:0 auto!important;
+  flex:0 0 auto;
 }
+
 .mission-diagnostics .mission-content{
   display:grid;
-  grid-template-rows:minmax(0,1fr) 44px;
-  gap:8px;
-  align-content:stretch;
+  grid-template-rows:auto auto;
+  gap:10px;
+  align-content:start;
+  overflow:hidden;
+  padding-bottom:10px;
 }
 .mission-diagnostics .diagnostics-panel{
+  height:auto;
   min-height:0;
-  height:100%;
-  padding:7px;
+  padding:8px;
   overflow:hidden;
 }
 .mission-diagnostics .diagnostics-grid{
-  height:100%;
+  height:auto;
   min-height:0;
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  grid-template-rows:repeat(3,minmax(0,1fr));
-  gap:6px;
+  grid-template-rows:repeat(3,98px);
+  gap:7px;
   margin:0;
+  align-content:start;
 }
+
+/* Compact bank: number + name share one centred header line, then the graphic
+   sits in its own centred window, followed by the scan state. */
 .mission-diagnostics .sensor{
   min-width:0;
   min-height:0;
-  height:auto;
-  padding:6px 7px 5px;
+  height:98px;
+  padding:7px 9px 6px;
   border-radius:8px;
-  gap:1px;
-  justify-content:flex-start;
+  display:grid;
+  grid-template-rows:18px 1fr 10px;
+  justify-items:center;
+  align-items:center;
+  gap:2px;
+  overflow:hidden;
+  text-align:center;
+}
+.mission-diagnostics .sensor-head{
+  width:100%;
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:6px;
+  min-width:0;
 }
 .mission-diagnostics .sensor .num{
+  flex:0 0 auto;
   font-size:18px;
-  line-height:.95;
+  line-height:1;
 }
 .mission-diagnostics .sensor .name{
-  width:100%;
-  margin-top:1px;
-  font-size:13.5px;
+  width:auto;
+  min-width:0;
+  margin:0;
+  font-size:14px;
   line-height:1;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 .mission-diagnostics .sensor-viz{
-  width:min(72px,58%);
-  height:34px;
-  margin:3px auto 0;
-  flex:0 1 34px;
+  width:82px;
+  height:44px;
+  max-width:100%;
+  max-height:44px;
+  margin:0 auto;
+  place-self:center;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+.mission-diagnostics .sensor-viz svg{
+  display:block;
+  width:82px;
+  height:44px;
+  max-width:100%;
+  max-height:100%;
+  margin:auto;
+  overflow:hidden;
+  transform-origin:center;
+}
+.mission-diagnostics .viz-power{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:5px;
+  padding:2px 6px;
+}
+.mission-diagnostics .viz-recovery{
+  display:block;
+  position:relative;
 }
 .mission-diagnostics .sensor .state{
+  position:static;
   width:100%;
-  margin-top:auto;
-  padding-top:2px;
+  margin:0;
+  padding:0;
   font-size:7px;
-  line-height:1.05;
+  line-height:1;
   letter-spacing:.09em;
+  text-align:center;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
+/* The CTA deliberately returns to the shared app button system. No MC-02-only
+   height, padding or font-size overrides. */
 .mission-diagnostics #diagComplete{
-  min-height:44px;
-  height:44px;
-  padding:8px 14px;
+  width:100%;
   margin:0;
-  font-size:10px;
-  align-self:end;
+  align-self:start;
+}
+
+/* Short phones compress only the banks themselves. Audi, title, subtitle and
+   CTA remain at the same design-system sizes used everywhere else. */
+@media(max-height:740px){
+  .mission-diagnostics .diagnostics-head{margin-bottom:6px;padding-top:2px!important;padding-bottom:4px!important}
+  .mission-diagnostics .diagnostics-brand{margin:2px auto 1px;min-height:32px}
+  .mission-diagnostics .diagnostics-brand img{width:100px;max-width:100px}
+  .mission-diagnostics .mission-content{gap:8px;padding-bottom:8px}
+  .mission-diagnostics .diagnostics-panel{padding:6px}
+  .mission-diagnostics .diagnostics-grid{grid-template-rows:repeat(3,90px);gap:5px 6px}
+  .mission-diagnostics .sensor{height:90px;padding:5px 7px 5px;grid-template-rows:17px 1fr 9px}
+  .mission-diagnostics .sensor .num{font-size:17px}
+  .mission-diagnostics .sensor .name{font-size:13.5px}
+  .mission-diagnostics .sensor-viz{width:78px;height:40px;max-height:40px}
+  .mission-diagnostics .sensor-viz svg{width:78px;height:40px}
+  .mission-diagnostics .sensor .state{font-size:6.7px}
+}
+@media(max-height:660px){
+  .mission-diagnostics .diagnostics-grid{grid-template-rows:repeat(3,84px);gap:4px 5px}
+  .mission-diagnostics .sensor{height:84px;padding:4px 6px;grid-template-rows:16px 1fr 8px}
+  .mission-diagnostics .sensor .num{font-size:16px}
+  .mission-diagnostics .sensor .name{font-size:13px}
+  .mission-diagnostics .sensor-viz{width:72px;height:36px;max-height:36px}
+  .mission-diagnostics .sensor-viz svg{width:72px;height:36px}
+  .mission-diagnostics .sensor .state{font-size:6.4px}
+}
+
+
+
+/* Pass 6.70 — MC-02 diagnostic label alignment + visual scale normalization */
+/* Treat each diagnostic heading as one centred label. The mission number and
+   system name deliberately use identical type sizing so no bank reads heavier. */
+.mission-diagnostics .sensor-head{
+  display:block!important;
+  width:100%;
+  max-width:100%;
+  place-self:center;
+  text-align:center;
+  white-space:nowrap;
+  overflow:visible;
+  line-height:18px;
+}
+.mission-diagnostics .sensor .num,
+.mission-diagnostics .sensor .name{
+  display:inline;
+  width:auto;
+  min-width:0;
+  margin:0;
+  padding:0;
+  font-family:var(--display);
+  font-size:16px;
+  line-height:18px;
+  font-weight:700;
+  vertical-align:baseline;
+  white-space:nowrap;
+  overflow:visible;
+  text-overflow:clip;
+}
+.mission-diagnostics .sensor .num{margin-right:5px;color:#d9f7ff}
+
+/* Every diagnostic symbol occupies the same centred canvas. Individual visual
+   geometry is balanced inside that canvas rather than changing tile size. */
+.mission-diagnostics .sensor-viz{
+  width:84px;
+  height:46px;
+  max-width:84px;
+  max-height:46px;
+  margin:0 auto;
+  place-self:center;
+}
+.mission-diagnostics .sensor-viz svg{
+  width:84px;
+  height:46px;
+  max-width:84px;
+  max-height:46px;
+}
+.mission-diagnostics .viz-power{
+  width:84px;
+  height:46px;
+  gap:6px;
+  padding:1px 5px;
+}
+.mission-diagnostics .viz-power span{width:8px}
+.mission-diagnostics .viz-power span:nth-child(1){height:11px}
+.mission-diagnostics .viz-power span:nth-child(2){height:18px}
+.mission-diagnostics .viz-power span:nth-child(3){height:28px}
+.mission-diagnostics .viz-power span:nth-child(4){height:36px}
+.mission-diagnostics .viz-power span:nth-child(5){height:44px}
+.mission-diagnostics .viz-recovery{
+  width:84px;
+  height:46px;
+}
+.mission-diagnostics .viz-recovery .recovery-ring{
+  left:19px;
+  top:0;
+  width:46px;
+  height:46px;
+}
+.mission-diagnostics .viz-recovery b{
+  left:33px;
+  top:13px;
+  width:18px;
+  height:20px;
 }
 
 @media(max-height:740px){
-  .mission-diagnostics .diagnostics-head{margin-bottom:3px;padding-top:1px!important;padding-bottom:3px!important}
-  .mission-diagnostics .diagnostics-brand img{width:50px}
-  .mission-diagnostics .diagnostics-head h1{font-size:21px}
-  .mission-diagnostics .diagnostics-head p.support-copy{font-size:12px;line-height:15px}
-  .mission-diagnostics .mission-content{grid-template-rows:minmax(0,1fr) 40px;gap:6px}
-  .mission-diagnostics .diagnostics-panel{padding:5px}
-  .mission-diagnostics .diagnostics-grid{gap:4px 5px}
-  .mission-diagnostics .sensor{padding:4px 6px 3px}
-  .mission-diagnostics .sensor .num{font-size:16px}
-  .mission-diagnostics .sensor .name{font-size:12px}
-  .mission-diagnostics .sensor-viz{width:min(64px,54%);height:26px;flex-basis:26px;margin-top:2px}
-  .mission-diagnostics .sensor .state{font-size:6.2px;padding-top:1px}
-  .mission-diagnostics #diagComplete{height:40px;min-height:40px;font-size:9px;padding:6px 10px}
+  .mission-diagnostics .sensor .num,
+  .mission-diagnostics .sensor .name{font-size:15.5px;line-height:17px}
+  .mission-diagnostics .sensor .num{margin-right:5px}
+  .mission-diagnostics .sensor-viz,
+  .mission-diagnostics .sensor-viz svg,
+  .mission-diagnostics .viz-power,
+  .mission-diagnostics .viz-recovery{width:80px;height:42px;max-width:80px;max-height:42px}
+  .mission-diagnostics .viz-power span:nth-child(5){height:40px}
+  .mission-diagnostics .viz-power span:nth-child(4){height:33px}
+  .mission-diagnostics .viz-power span:nth-child(3){height:26px}
+  .mission-diagnostics .viz-power span:nth-child(2){height:17px}
+  .mission-diagnostics .viz-power span:nth-child(1){height:10px}
+  .mission-diagnostics .viz-recovery .recovery-ring{left:19px;top:0;width:42px;height:42px}
+  .mission-diagnostics .viz-recovery b{left:32px;top:12px;width:16px;height:18px}
 }
-
 @media(max-height:660px){
-  .mission-diagnostics .diagnostics-brand{display:none}
-  .mission-diagnostics .diagnostics-head h1{font-size:20px;margin-top:0}
-  .mission-diagnostics .diagnostics-head p.support-copy{font-size:11.5px;line-height:14px}
-  .mission-diagnostics .diagnostics-grid{gap:3px 5px}
-  .mission-diagnostics .sensor{padding:3px 5px 2px}
-  .mission-diagnostics .sensor .num{font-size:15px}
-  .mission-diagnostics .sensor .name{font-size:11.5px}
-  .mission-diagnostics .sensor-viz{height:22px;flex-basis:22px;margin-top:1px}
-  .mission-diagnostics .sensor .state{font-size:5.8px}
+  .mission-diagnostics .sensor .num,
+  .mission-diagnostics .sensor .name{font-size:15px;line-height:16px}
+  .mission-diagnostics .sensor .num{margin-right:4px}
+  .mission-diagnostics .sensor-viz,
+  .mission-diagnostics .sensor-viz svg,
+  .mission-diagnostics .viz-power,
+  .mission-diagnostics .viz-recovery{width:74px;height:38px;max-width:74px;max-height:38px}
+  .mission-diagnostics .viz-power{gap:5px;padding:1px 5px}
+  .mission-diagnostics .viz-power span{width:7px}
+  .mission-diagnostics .viz-power span:nth-child(5){height:36px}
+  .mission-diagnostics .viz-power span:nth-child(4){height:30px}
+  .mission-diagnostics .viz-power span:nth-child(3){height:23px}
+  .mission-diagnostics .viz-power span:nth-child(2){height:15px}
+  .mission-diagnostics .viz-power span:nth-child(1){height:9px}
+  .mission-diagnostics .viz-recovery .recovery-ring{left:18px;top:0;width:38px;height:38px}
+  .mission-diagnostics .viz-recovery b{left:29px;top:10px;width:16px;height:18px}
 }
