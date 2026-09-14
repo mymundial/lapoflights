@@ -317,3 +317,10 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Traction is deliberately zoomed within its SVG viewBox so it no longer appears undersized beside Aero, Stability, Power, Control and Recovery.
 - Recovery and Power visuals have been rebalanced to match the common diagnostic graphic scale.
 - Service-worker cache bumped to v70.
+
+
+## Pass 6.71
+
+- MC-02-only alignment correction: diagnostic title, icon and READY TO SCAN state are hard-centred against each tile.
+- Existing 2 × 3 layout, tile sizing, visual sizing and global challenge typography remain unchanged.
+- Service-worker cache bumped to v71.
