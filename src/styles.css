@@ -1528,107 +1528,152 @@ body.admin-mode button{
   .demo-system-icon .demo-scan-radar{width:50px;height:50px}
 }
 
-/* Pass 6.61 — global compact viewport fit */
-:root{--nav-h:64px}
+/* Pass 6.63 — clean viewport shell + balanced radar layout */
+:root{--nav-h:64px;--page-gutter:16px;--page-gap:12px}
 
-/* The guest app is composed to the viewport. Only Missions and Comms feeds scroll. */
+/* The phone frame itself is edge-to-edge. Individual content regions own their gutters. */
+.app-shell{height:100dvh;min-height:0;overflow:hidden}
+.phone{
+  width:min(100%,480px);
+  height:100dvh;
+  min-height:0;
+  padding:0;
+  overflow:hidden;
+}
 .screen{
+  height:calc(100% - var(--nav-h) - env(safe-area-inset-bottom));
+  min-height:0;
+  padding:0;
+  overflow:hidden;
   display:flex;
   flex-direction:column;
-  min-height:0;
-  overflow:hidden;
-  padding-top:calc(env(safe-area-inset-top, 0px) + 8px);
-  padding-bottom:0;
 }
 .phone.no-nav .screen{
   height:100%;
-  padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
 }
-@media(min-width:600px){.screen{padding-top:8px}}
 
-/* One compact masthead everywhere except the landing hero. */
-.topbar{
+/* Shared masthead: true full-bleed navy surface, fixed outside any scroll region. */
+.topbar,
+.radar-page>.topbar,
+.mission-shell>.topbar,
+.setup-page>.topbar{
+  position:relative;
+  z-index:60;
   flex:0 0 auto;
-  gap:5px;
-  padding:8px 0 10px;
-}
-.topbar .brand img{
-  width:min(58vw,220px);
-  max-width:220px;
-}
-.topbar .mission-control-logo{
-  width:min(78vw,300px);
-  max-width:300px;
-}
-.masthead-strap{
+  width:100%;
   margin:0;
-  font-size:10px;
-  line-height:1;
-  letter-spacing:.16em;
+  padding:calc(env(safe-area-inset-top,0px) + 7px) var(--page-gutter) 9px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  text-align:center;
+  overflow:hidden;
+  background:linear-gradient(180deg,#031522 0%,#03131f 100%);
+  border-bottom:1px solid rgba(72,196,235,.42);
+  box-shadow:0 8px 18px rgba(1,12,20,.24);
 }
-.hero{min-height:100%;}
+.topbar .brand{margin:0;padding:0;line-height:0;display:flex;align-items:center;justify-content:center}
+.topbar .brand img{width:min(54vw,205px);max-width:205px;height:auto}
+.topbar .mission-control-logo{width:min(74vw,282px);max-width:282px;height:auto;margin:0}
+.masthead-strap{margin:0;font-size:9px;line-height:1.05;letter-spacing:.16em}
 
-/* Smaller persistent bottom navigation. */
+/* Landing remains intentionally larger and independent of the persistent masthead system. */
+.hero{min-height:100%;padding:calc(env(safe-area-inset-top,0px) + 24px) 22px calc(30px + env(safe-area-inset-bottom));}
+.hero .topbar{padding:0;background:none;border:0;box-shadow:none;overflow:visible}
+
+/* Bottom navigation is fixed to the frame and compact. */
+.nav{height:calc(var(--nav-h) + env(safe-area-inset-bottom));}
 .nav button{gap:4px;font-size:8px}
 .nav .ico{height:25px}
 .nav .ico svg{width:30px;height:18px}
 .nav-sleigh-icon-wrap,.nav-sleigh-icon{width:30px;height:18px}
 
-/* Radar: telemetry label rides the panel border and the instrument is height-aware. */
+/* ---------- RADAR ---------- */
 .radar-page{
   flex:1 1 auto;
   min-height:0;
   height:100%;
-  display:flex;
-  flex-direction:column;
+  display:grid;
+  grid-template-rows:auto auto minmax(0,1fr) auto;
+  overflow:hidden;
 }
 .telemetry-block{
   position:relative;
+  display:grid;
+  gap:8px;
+  margin:12px var(--page-gutter) 0;
   flex:0 0 auto;
-  display:block;
-  margin:14px 0 10px;
 }
 .telemetry-heading{
-  position:absolute;
-  z-index:3;
-  top:-5px;
-  left:12px;
-  padding:0 7px;
-  background:#03131f;
+  position:static;
+  padding:0;
+  margin:0;
+  background:none;
+  color:var(--cyan);
   font-size:9px;
-  line-height:11px;
+  line-height:1;
   letter-spacing:.20em;
+  text-align:center;
+  text-transform:uppercase;
+  font-weight:800;
+  text-shadow:0 0 12px rgba(80,209,249,.22);
 }
-.status-strip{margin:0}
-.status-cell{min-height:58px;padding:10px 7px 7px}
+.status-strip{margin:0;overflow:hidden}
+.status-cell{min-height:58px;padding:9px 7px 7px}
 .status-label{font-size:7px;letter-spacing:.14em}
 .status-value{font-size:17px;margin-top:3px}
-.radar-wrap{
-  flex:0 0 auto;
-  width:min(82vw,36dvh,312px);
-  margin:0 auto 10px;
+
+/* The free zone between telemetry and the lower status card owns the radar.
+   The circle grows to the largest diameter that fits the zone with comfortable padding. */
+.radar-zone{
+  min-height:0;
+  padding:14px calc(var(--page-gutter) + 2px);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
 }
+.radar-wrap{
+  position:relative;
+  height:min(100%,calc(100vw - 44px),352px);
+  width:auto;
+  max-width:100%;
+  aspect-ratio:1 / 1;
+  margin:0;
+  border-radius:50%;
+  isolation:isolate;
+  box-shadow:0 16px 34px rgba(0,0,0,.34),0 0 34px rgba(57,192,238,.08);
+}
+.radar-wrap::before{inset:-2px}
 .radar-wrap::after{inset:8.7%}
-.radar{inset:9.2%}
+.radar{inset:9.2%;border-radius:50%}
+
+/* Lower state/action card is a fixed-height instrument, separated from the nav. */
 #radarMessage,
 .message-card,
 .compact-target,
 .compact-message,
-.message-card.comms-alert{
-  height:72px;
-  min-height:72px;
+.message-card.comms-alert{height:72px;min-height:72px}
+#radarMessage{
+  margin:0 var(--page-gutter) 14px;
+  padding:8px 12px;
+  flex:0 0 72px;
 }
-#radarMessage{flex:0 0 72px;margin-top:auto;padding:8px 12px}
 #radarMessage .btn.small{min-height:36px;padding:0 12px;font-size:9px}
 #radarMessage h3{font-size:18px}
+#radarMessage>div,#radarMessage .comms-alert-copy{min-width:0}
 
-/* Setup/onboarding: fill the remaining viewport rather than using a tall fixed card. */
+/* ---------- SETUP / ONBOARDING ---------- */
 .setup-page{
   flex:1 1 auto;
   min-height:0;
   height:100%;
   display:flex;
   flex-direction:column;
+  overflow:hidden;
+  padding:0;
 }
 .setup-page .setup-card,
 .setup-page.demo-scan-page .demo-scan-card,
@@ -1637,56 +1682,41 @@ body.admin-mode button{
 .setup-page.radar-setup-page .setup-card{
   flex:1 1 auto;
   min-height:0;
-  margin-top:12px;
+  margin:12px var(--page-gutter) 0;
   padding:18px 20px 18px;
   grid-template-rows:68px 38px minmax(68px,auto) 1fr;
   row-gap:11px;
 }
 .setup-page .setup-icon,
 .setup-page .briefing-icon,
-.setup-page .audio-icon{
-  width:68px;
-  height:68px;
-  padding:11px;
-}
+.setup-page .audio-icon{width:68px;height:68px;padding:11px}
 .setup-icon-glyph{width:44px;height:44px}
-.setup-icon-glyph img,
-.setup-page .briefing-icon img,
-.setup-page .audio-icon img{max-width:44px;max-height:44px}
-.setup-page .setup-card h1,
-.setup-page.demo-scan-page .demo-scan-card h1{
-  min-height:38px;
-  font-size:28px;
-  line-height:1;
-}
-.setup-page .setup-card .support-copy,
-.setup-page.demo-scan-page .demo-scan-card p{
-  min-height:0;
-  font-size:15px;
-  line-height:21px;
-}
+.setup-icon-glyph img,.setup-page .briefing-icon img,.setup-page .audio-icon img{max-width:44px;max-height:44px}
+.setup-page .setup-card h1,.setup-page.demo-scan-page .demo-scan-card h1{min-height:38px;font-size:28px;line-height:1}
+.setup-page .setup-card .support-copy,.setup-page.demo-scan-page .demo-scan-card p{min-height:0;font-size:15px;line-height:21px}
 .setup-page .setup-actions{align-self:end}
 .setup-page .btn{min-height:44px;padding:10px 16px}
 .demo-system-icon .demo-scan-radar{width:44px;height:44px}
 
-/* Missions: only the log itself scrolls. */
+/* ---------- MISSIONS ---------- */
+.screen>.topbar{flex:0 0 auto}
 .screen>.missions-list{
   flex:1 1 auto;
   min-height:0;
   overflow-y:auto;
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
-  margin-top:10px;
-  padding-bottom:8px;
+  margin:12px var(--page-gutter) 0;
+  padding:0 0 10px;
 }
 .mission-row{padding:10px 11px;gap:9px}
 .mission-index{width:31px;height:31px}
 .mission-row h3{font-size:16px}
 
-/* Comms: radio remains fixed; only message history scrolls. */
+/* ---------- COMMS ---------- */
 .screen>.comms-radio.compact{
   flex:0 0 auto;
-  margin:10px 0 8px;
+  margin:12px var(--page-gutter) 8px;
   padding:11px 12px 10px;
 }
 .comms-radio.compact .wave{height:42px;margin:6px 0 5px}
@@ -1698,20 +1728,21 @@ body.admin-mode button{
   overflow-y:auto;
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
-  margin:0;
-  padding-bottom:8px;
+  margin:0 var(--page-gutter);
+  padding:0 0 10px;
+  position:relative;
 }
 .comms-section-title{position:sticky;top:0;z-index:2;background:#031522;padding:5px 2px}
 .comms-message{padding:11px 12px 10px}
 .comms-message h3{font-size:17px;margin:6px 0 4px}
 .comms-message p{font-size:10px;line-height:1.4}
 
-/* Sleigh: artwork flexes to the height left after the fixed information rows. */
+/* ---------- SLEIGH ---------- */
 .screen>.sleigh-card{
   flex:1 1 auto;
   min-height:0;
   overflow:hidden;
-  margin-top:10px;
+  margin:12px var(--page-gutter) 0;
   padding:12px 12px 10px;
   display:flex;
   flex-direction:column;
@@ -1720,12 +1751,7 @@ body.admin-mode button{
 .sleigh-title-row h1,.sleigh-percent{font-size:23px!important}
 .sleigh-pretitle{font-size:9px!important}
 .sleigh-development-bar{height:7px;margin:0 2px 8px}
-.sleigh-visual{
-  flex:1 1 180px;
-  min-height:120px;
-  max-height:240px;
-  aspect-ratio:auto;
-}
+.sleigh-visual{flex:1 1 180px;min-height:120px;max-height:240px;aspect-ratio:auto}
 .sleigh-update-box,.sleigh-systems{margin-top:8px;padding:9px 10px 10px}
 .sleigh-update-box .sleigh-systems-copy{font-size:10px;line-height:1.35}
 .sleigh-systems .sleigh-systems-title{margin-bottom:7px}
@@ -1734,7 +1760,7 @@ body.admin-mode button{
 .sleigh-system{gap:5px}
 .sleigh-system-label{font-size:6px}
 
-/* Mission/game pages: fixed masthead + compact mission heading + adaptive game area. */
+/* ---------- MISSION / GAME PAGES ---------- */
 .mission-shell{
   flex:1 1 auto;
   min-height:0;
@@ -1743,11 +1769,10 @@ body.admin-mode button{
   flex-direction:column;
   overflow:hidden;
 }
-.mission-shell>.topbar{flex:0 0 auto}
 .mission-head{
   flex:0 0 auto;
-  padding:6px 0 9px!important;
-  margin-bottom:9px;
+  margin:0 var(--page-gutter) 8px;
+  padding:7px 0 8px!important;
 }
 .mission-head .meta{min-height:24px}
 .mission-head h1{font-size:27px;margin:2px 0 3px}
@@ -1761,10 +1786,11 @@ body.admin-mode button{
   overflow:hidden;
   gap:8px;
   align-content:start;
+  margin:0 var(--page-gutter);
 }
 .mission-instrument{padding:11px}
 
-/* Large mission visuals become viewport-aware rather than fixed-height. */
+/* Large mission visuals are height-aware. */
 .power-run-panel{padding:8px}
 .power-road-scene{height:clamp(180px,29dvh,255px)!important}
 .spirit-panel{padding:10px 11px 12px}
@@ -1793,18 +1819,20 @@ body.admin-mode button{
 .aurora-ring-statuses{margin-top:7px}
 .aurora-ring-status{padding:7px 6px}
 
-/* Short phones compress spacing and visuals again, while preserving text legibility. */
+/* Short phones reduce padding before they reduce content readability. */
 @media(max-height:740px){
-  .screen{padding-top:calc(env(safe-area-inset-top, 0px) + 5px)}
-  .topbar{gap:3px;padding:5px 0 7px}
-  .topbar .brand img{width:min(52vw,195px);max-width:195px}
-  .topbar .mission-control-logo{width:min(70vw,270px);max-width:270px}
-  .masthead-strap{font-size:9px;letter-spacing:.14em}
-  .telemetry-block{margin:10px 0 7px}
+  .topbar,.radar-page>.topbar,.mission-shell>.topbar,.setup-page>.topbar{
+    padding:calc(env(safe-area-inset-top,0px) + 5px) var(--page-gutter) 7px;
+    gap:3px;
+  }
+  .topbar .brand img{width:min(50vw,188px);max-width:188px}
+  .topbar .mission-control-logo{width:min(70vw,258px);max-width:258px}
+  .masthead-strap{font-size:8.5px;letter-spacing:.14em}
+  .telemetry-block{margin-top:9px;gap:6px}
   .status-cell{min-height:52px}
-  .radar-wrap{width:min(76vw,33dvh,270px);margin-bottom:7px}
+  .radar-zone{padding:10px calc(var(--page-gutter) + 2px)}
   #radarMessage,.message-card,.compact-target,.compact-message,.message-card.comms-alert{height:66px;min-height:66px}
-  #radarMessage{flex-basis:66px}
+  #radarMessage{flex-basis:66px;margin-bottom:10px}
   .setup-page .setup-card,.setup-page.demo-scan-page .demo-scan-card,.setup-page.briefing-page .setup-card,.setup-page.audio-page .setup-card,.setup-page.radar-setup-page .setup-card{margin-top:8px;padding:14px 17px;grid-template-rows:60px 34px minmax(58px,auto) 1fr;row-gap:8px}
   .setup-page .setup-icon,.setup-page .briefing-icon,.setup-page .audio-icon{width:60px;height:60px;padding:9px}
   .setup-page .setup-card h1,.setup-page.demo-scan-page .demo-scan-card h1{font-size:25px;min-height:34px}
@@ -1827,138 +1855,13 @@ body.admin-mode button{
 }
 
 @media(max-width:360px){
-  .topbar .brand img{width:min(56vw,200px);max-width:200px}
-  .topbar .mission-control-logo{width:min(76vw,280px);max-width:280px}
-  .masthead-strap{font-size:9px}
-  .radar-wrap{width:min(82vw,35dvh,292px)}
-}
-
-
-/* Pass 6.62 — full-bleed masthead + radar breathing-room refinement */
-/* The frame itself owns the safe area; the shared masthead paints through it. */
-.phone{
-  padding-top:0;
-}
-.screen{
-  padding-top:0;
-}
-@media(min-width:600px){
-  .screen{padding-top:0}
-}
-
-/* Standard masthead is a true full-width header surface, not a sticky overlay. */
-.topbar,
-.radar-page>.topbar{
-  position:relative;
-  top:auto;
-  z-index:60;
-  flex:0 0 auto;
-  width:calc(100% + 32px);
-  margin:0 -16px;
-  padding:calc(env(safe-area-inset-top, 0px) + 7px) 16px 9px;
-  gap:4px;
-  overflow:hidden;
-  background:linear-gradient(180deg,#031522 0%,#03131f 100%);
-  border-bottom:1px solid rgba(72,196,235,.42);
-  box-shadow:0 8px 18px rgba(1,12,20,.24);
-}
-.topbar .brand img{
-  width:min(54vw,205px);
-  max-width:205px;
-}
-.topbar .mission-control-logo{
-  width:min(74vw,282px);
-  max-width:282px;
-}
-.masthead-strap{
-  font-size:9px;
-  line-height:1.05;
-  letter-spacing:.16em;
-}
-
-/* Landing remains its own full-screen hero treatment. */
-.hero{padding-top:calc(env(safe-area-inset-top, 0px) + 24px)}
-.hero .topbar{
-  width:100%;
-  margin:0;
-  padding:0;
-  background:none;
-  border:0;
-  box-shadow:none;
-  overflow:visible;
-}
-
-/* Telemetry label gets its own row instead of sitting on the panel border. */
-.telemetry-block{
-  position:relative;
-  display:grid;
-  gap:7px;
-  margin:13px 0 11px;
-}
-.telemetry-heading{
-  position:static;
-  padding:0 4px;
-  background:none;
-  font-size:9px;
-  line-height:1;
-  letter-spacing:.20em;
-}
-.status-strip{margin:0}
-
-/* Use the newly available centre space for the radar; preserve a perfect circle. */
-.radar-page{
-  min-height:0;
-}
-.radar-wrap{
-  flex:0 0 auto;
-  width:min(90vw,43dvh,344px);
-  aspect-ratio:1 / 1;
-  margin:0 auto 12px;
-}
-.radar-wrap::before,
-.radar-wrap::after,
-.radar{
-  border-radius:50%;
-}
-
-/* The lower Mission Control card is deliberately separate from the nav. */
-#radarMessage{
-  flex:0 0 72px;
-  margin-top:auto;
-  margin-bottom:14px;
-}
-
-/* Mission Log and Comms: the header never participates in their scroll surface. */
-.screen>.missions-list,
-.screen>.comms-feed{
-  position:relative;
-  z-index:1;
-  clip-path:inset(0 round 0);
-}
-.screen>.missions-list{
-  margin-top:12px;
-}
-.screen>.comms-radio.compact{
-  margin-top:12px;
-}
-
-/* Short phones still retain the same spacing logic instead of crushing the radar. */
-@media(max-height:740px){
-  .topbar,
-  .radar-page>.topbar{
-    padding:calc(env(safe-area-inset-top, 0px) + 5px) 16px 7px;
-    gap:3px;
-  }
-  .topbar .brand img{width:min(50vw,188px);max-width:188px}
-  .topbar .mission-control-logo{width:min(70vw,258px);max-width:258px}
-  .masthead-strap{font-size:8.5px;letter-spacing:.14em}
-  .telemetry-block{margin:10px 0 8px;gap:6px}
-  .radar-wrap{width:min(86vw,40dvh,306px);margin-bottom:9px}
-  #radarMessage{margin-bottom:10px}
-}
-
-@media(max-width:360px){
+  :root{--page-gutter:14px}
   .topbar .brand img{width:min(53vw,190px);max-width:190px}
   .topbar .mission-control-logo{width:min(73vw,264px);max-width:264px}
-  .radar-wrap{width:min(88vw,41dvh,314px)}
+  .masthead-strap{font-size:8.5px}
+  .radar-zone{padding-left:16px;padding-right:16px}
 }
+
+/* Admin is intentionally document-scrollable and does not inherit guest viewport locking. */
+body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visible}
+.admin-page .phone,.admin-page .screen{height:auto;min-height:100%;overflow:visible;display:block}

@@ -428,7 +428,7 @@
   function renderRadar(){
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
-    return `<section class="radar-page${modeClass}">${topBar()}${statusStrip()}<section class="radar-wrap"><div class="radar"><div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section>${radarMessage(cp)}</section>`;
+    return `<section class="radar-page${modeClass}">${topBar()}${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar"><div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
