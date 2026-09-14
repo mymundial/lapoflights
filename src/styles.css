@@ -1832,3 +1832,133 @@ body.admin-mode button{
   .masthead-strap{font-size:9px}
   .radar-wrap{width:min(82vw,35dvh,292px)}
 }
+
+
+/* Pass 6.62 — full-bleed masthead + radar breathing-room refinement */
+/* The frame itself owns the safe area; the shared masthead paints through it. */
+.phone{
+  padding-top:0;
+}
+.screen{
+  padding-top:0;
+}
+@media(min-width:600px){
+  .screen{padding-top:0}
+}
+
+/* Standard masthead is a true full-width header surface, not a sticky overlay. */
+.topbar,
+.radar-page>.topbar{
+  position:relative;
+  top:auto;
+  z-index:60;
+  flex:0 0 auto;
+  width:calc(100% + 32px);
+  margin:0 -16px;
+  padding:calc(env(safe-area-inset-top, 0px) + 7px) 16px 9px;
+  gap:4px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#031522 0%,#03131f 100%);
+  border-bottom:1px solid rgba(72,196,235,.42);
+  box-shadow:0 8px 18px rgba(1,12,20,.24);
+}
+.topbar .brand img{
+  width:min(54vw,205px);
+  max-width:205px;
+}
+.topbar .mission-control-logo{
+  width:min(74vw,282px);
+  max-width:282px;
+}
+.masthead-strap{
+  font-size:9px;
+  line-height:1.05;
+  letter-spacing:.16em;
+}
+
+/* Landing remains its own full-screen hero treatment. */
+.hero{padding-top:calc(env(safe-area-inset-top, 0px) + 24px)}
+.hero .topbar{
+  width:100%;
+  margin:0;
+  padding:0;
+  background:none;
+  border:0;
+  box-shadow:none;
+  overflow:visible;
+}
+
+/* Telemetry label gets its own row instead of sitting on the panel border. */
+.telemetry-block{
+  position:relative;
+  display:grid;
+  gap:7px;
+  margin:13px 0 11px;
+}
+.telemetry-heading{
+  position:static;
+  padding:0 4px;
+  background:none;
+  font-size:9px;
+  line-height:1;
+  letter-spacing:.20em;
+}
+.status-strip{margin:0}
+
+/* Use the newly available centre space for the radar; preserve a perfect circle. */
+.radar-page{
+  min-height:0;
+}
+.radar-wrap{
+  flex:0 0 auto;
+  width:min(90vw,43dvh,344px);
+  aspect-ratio:1 / 1;
+  margin:0 auto 12px;
+}
+.radar-wrap::before,
+.radar-wrap::after,
+.radar{
+  border-radius:50%;
+}
+
+/* The lower Mission Control card is deliberately separate from the nav. */
+#radarMessage{
+  flex:0 0 72px;
+  margin-top:auto;
+  margin-bottom:14px;
+}
+
+/* Mission Log and Comms: the header never participates in their scroll surface. */
+.screen>.missions-list,
+.screen>.comms-feed{
+  position:relative;
+  z-index:1;
+  clip-path:inset(0 round 0);
+}
+.screen>.missions-list{
+  margin-top:12px;
+}
+.screen>.comms-radio.compact{
+  margin-top:12px;
+}
+
+/* Short phones still retain the same spacing logic instead of crushing the radar. */
+@media(max-height:740px){
+  .topbar,
+  .radar-page>.topbar{
+    padding:calc(env(safe-area-inset-top, 0px) + 5px) 16px 7px;
+    gap:3px;
+  }
+  .topbar .brand img{width:min(50vw,188px);max-width:188px}
+  .topbar .mission-control-logo{width:min(70vw,258px);max-width:258px}
+  .masthead-strap{font-size:8.5px;letter-spacing:.14em}
+  .telemetry-block{margin:10px 0 8px;gap:6px}
+  .radar-wrap{width:min(86vw,40dvh,306px);margin-bottom:9px}
+  #radarMessage{margin-bottom:10px}
+}
+
+@media(max-width:360px){
+  .topbar .brand img{width:min(53vw,190px);max-width:190px}
+  .topbar .mission-control-logo{width:min(73vw,264px);max-width:264px}
+  .radar-wrap{width:min(88vw,41dvh,314px)}
+}
