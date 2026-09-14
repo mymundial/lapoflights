@@ -253,3 +253,12 @@ Pass 6.52: Demo System Check now uses the full shared masthead and the same regi
 - The next-checkpoint fallback is conservative: 35 m accuracy or better, close to the next activation zone, clearly beyond the current exit zone, sustained for 1.8 seconds.
 - Live in-range/target state is revalidated after refresh rather than trusted from localStorage.
 - Detection remains more permissive so guests can still see an approaching checkpoint before activation quality is sufficient.
+
+## Pass 6.56 — Vercel-ready package
+
+This pass adds a self-contained static build for Vercel. No Vercel project-setting changes are required for a normal deployment from this project root.
+
+- `npm run build` creates `dist/` with the browser app.
+- `vercel.json` tells Vercel to deploy `dist/`.
+- `/admin` rewrites to the app entry point so the GPS Admin page works directly.
+- The downloadable ZIP is flattened so `index.html`, `package.json`, and `vercel.json` are at the archive root.
