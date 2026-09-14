@@ -1527,3 +1527,308 @@ body.admin-mode button{
   .setup-page.demo-scan-page .demo-scan-card p{min-height:92px}
   .demo-system-icon .demo-scan-radar{width:50px;height:50px}
 }
+
+/* Pass 6.61 — global compact viewport fit */
+:root{--nav-h:64px}
+
+/* The guest app is composed to the viewport. Only Missions and Comms feeds scroll. */
+.screen{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+  padding-top:calc(env(safe-area-inset-top, 0px) + 8px);
+  padding-bottom:0;
+}
+.phone.no-nav .screen{
+  height:100%;
+  padding-bottom:calc(8px + env(safe-area-inset-bottom));
+}
+@media(min-width:600px){.screen{padding-top:8px}}
+
+/* One compact masthead everywhere except the landing hero. */
+.topbar{
+  flex:0 0 auto;
+  gap:5px;
+  padding:8px 0 10px;
+}
+.topbar .brand img{
+  width:min(58vw,220px);
+  max-width:220px;
+}
+.topbar .mission-control-logo{
+  width:min(78vw,300px);
+  max-width:300px;
+}
+.masthead-strap{
+  margin:0;
+  font-size:10px;
+  line-height:1;
+  letter-spacing:.16em;
+}
+.hero{min-height:100%;}
+
+/* Smaller persistent bottom navigation. */
+.nav button{gap:4px;font-size:8px}
+.nav .ico{height:25px}
+.nav .ico svg{width:30px;height:18px}
+.nav-sleigh-icon-wrap,.nav-sleigh-icon{width:30px;height:18px}
+
+/* Radar: telemetry label rides the panel border and the instrument is height-aware. */
+.radar-page{
+  flex:1 1 auto;
+  min-height:0;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.telemetry-block{
+  position:relative;
+  flex:0 0 auto;
+  display:block;
+  margin:14px 0 10px;
+}
+.telemetry-heading{
+  position:absolute;
+  z-index:3;
+  top:-5px;
+  left:12px;
+  padding:0 7px;
+  background:#03131f;
+  font-size:9px;
+  line-height:11px;
+  letter-spacing:.20em;
+}
+.status-strip{margin:0}
+.status-cell{min-height:58px;padding:10px 7px 7px}
+.status-label{font-size:7px;letter-spacing:.14em}
+.status-value{font-size:17px;margin-top:3px}
+.radar-wrap{
+  flex:0 0 auto;
+  width:min(82vw,36dvh,312px);
+  margin:0 auto 10px;
+}
+.radar-wrap::after{inset:8.7%}
+.radar{inset:9.2%}
+#radarMessage,
+.message-card,
+.compact-target,
+.compact-message,
+.message-card.comms-alert{
+  height:72px;
+  min-height:72px;
+}
+#radarMessage{flex:0 0 72px;margin-top:auto;padding:8px 12px}
+#radarMessage .btn.small{min-height:36px;padding:0 12px;font-size:9px}
+#radarMessage h3{font-size:18px}
+
+/* Setup/onboarding: fill the remaining viewport rather than using a tall fixed card. */
+.setup-page{
+  flex:1 1 auto;
+  min-height:0;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.setup-page .setup-card,
+.setup-page.demo-scan-page .demo-scan-card,
+.setup-page.briefing-page .setup-card,
+.setup-page.audio-page .setup-card,
+.setup-page.radar-setup-page .setup-card{
+  flex:1 1 auto;
+  min-height:0;
+  margin-top:12px;
+  padding:18px 20px 18px;
+  grid-template-rows:68px 38px minmax(68px,auto) 1fr;
+  row-gap:11px;
+}
+.setup-page .setup-icon,
+.setup-page .briefing-icon,
+.setup-page .audio-icon{
+  width:68px;
+  height:68px;
+  padding:11px;
+}
+.setup-icon-glyph{width:44px;height:44px}
+.setup-icon-glyph img,
+.setup-page .briefing-icon img,
+.setup-page .audio-icon img{max-width:44px;max-height:44px}
+.setup-page .setup-card h1,
+.setup-page.demo-scan-page .demo-scan-card h1{
+  min-height:38px;
+  font-size:28px;
+  line-height:1;
+}
+.setup-page .setup-card .support-copy,
+.setup-page.demo-scan-page .demo-scan-card p{
+  min-height:0;
+  font-size:15px;
+  line-height:21px;
+}
+.setup-page .setup-actions{align-self:end}
+.setup-page .btn{min-height:44px;padding:10px 16px}
+.demo-system-icon .demo-scan-radar{width:44px;height:44px}
+
+/* Missions: only the log itself scrolls. */
+.screen>.missions-list{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  margin-top:10px;
+  padding-bottom:8px;
+}
+.mission-row{padding:10px 11px;gap:9px}
+.mission-index{width:31px;height:31px}
+.mission-row h3{font-size:16px}
+
+/* Comms: radio remains fixed; only message history scrolls. */
+.screen>.comms-radio.compact{
+  flex:0 0 auto;
+  margin:10px 0 8px;
+  padding:11px 12px 10px;
+}
+.comms-radio.compact .wave{height:42px;margin:6px 0 5px}
+.comms-radio.compact .radio-state-line{padding-top:7px;font-size:8px}
+.comms-radio.compact .sound-toggle{min-width:96px;padding:6px 8px 6px 10px}
+.screen>.comms-feed{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  margin:0;
+  padding-bottom:8px;
+}
+.comms-section-title{position:sticky;top:0;z-index:2;background:#031522;padding:5px 2px}
+.comms-message{padding:11px 12px 10px}
+.comms-message h3{font-size:17px;margin:6px 0 4px}
+.comms-message p{font-size:10px;line-height:1.4}
+
+/* Sleigh: artwork flexes to the height left after the fixed information rows. */
+.screen>.sleigh-card{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  margin-top:10px;
+  padding:12px 12px 10px;
+  display:flex;
+  flex-direction:column;
+}
+.sleigh-title-row{padding-bottom:6px}
+.sleigh-title-row h1,.sleigh-percent{font-size:23px!important}
+.sleigh-pretitle{font-size:9px!important}
+.sleigh-development-bar{height:7px;margin:0 2px 8px}
+.sleigh-visual{
+  flex:1 1 180px;
+  min-height:120px;
+  max-height:240px;
+  aspect-ratio:auto;
+}
+.sleigh-update-box,.sleigh-systems{margin-top:8px;padding:9px 10px 10px}
+.sleigh-update-box .sleigh-systems-copy{font-size:10px;line-height:1.35}
+.sleigh-systems .sleigh-systems-title{margin-bottom:7px}
+.sleigh-system-grid{gap:5px}
+.sleigh-led{width:24px;height:24px}
+.sleigh-system{gap:5px}
+.sleigh-system-label{font-size:6px}
+
+/* Mission/game pages: fixed masthead + compact mission heading + adaptive game area. */
+.mission-shell{
+  flex:1 1 auto;
+  min-height:0;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.mission-shell>.topbar{flex:0 0 auto}
+.mission-head{
+  flex:0 0 auto;
+  padding:6px 0 9px!important;
+  margin-bottom:9px;
+}
+.mission-head .meta{min-height:24px}
+.mission-head h1{font-size:27px;margin:2px 0 3px}
+.mission-head p.support-copy{font-size:14px;line-height:19px;max-width:370px}
+.diagnostics-brand{margin:5px auto 2px}
+.diagnostics-brand img{width:78px}
+.diagnostics-head h1{font-size:27px;margin:3px 0}
+.mission-content{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  gap:8px;
+  align-content:start;
+}
+.mission-instrument{padding:11px}
+
+/* Large mission visuals become viewport-aware rather than fixed-height. */
+.power-run-panel{padding:8px}
+.power-road-scene{height:clamp(180px,29dvh,255px)!important}
+.spirit-panel{padding:10px 11px 12px}
+.tanks{height:clamp(205px,30dvh,292px)!important;padding-top:8px}
+.tank{height:calc(100% - 8px)!important}
+.spirit-instruction{margin:6px 0 8px}
+.charge{height:60px;font-size:34px}
+.comet-panel,.artifact-panel{padding:10px 11px 11px}
+.comet-game{height:clamp(220px,32dvh,320px)!important}
+.artifact-field{height:clamp(225px,33dvh,330px)!important}
+.jingle-panel{padding:11px}
+.jingle-stack{gap:7px}
+.jingle-stage{padding:7px 8px}
+.jingle-stage-head{margin-bottom:5px}
+.sync-lane{height:54px!important}
+.jingle-panel .signal-state{margin:7px 0 6px}
+.lando-panel{padding:10px 11px 11px}
+.lando-gantry-art{max-height:30dvh;margin:7px auto 4px}
+.reaction-read{font-size:38px;min-height:41px;margin-top:3px}
+.lando-state{margin:5px 0 7px}
+.lando-react-btn{min-height:48px}
+.lando-results{margin-top:7px}
+.lando-result{padding:6px 3px}
+.aurora-panel{padding:10px 9px 10px}
+.aurora-dial{width:min(100%,34dvh,330px)!important}
+.aurora-ring-statuses{margin-top:7px}
+.aurora-ring-status{padding:7px 6px}
+
+/* Short phones compress spacing and visuals again, while preserving text legibility. */
+@media(max-height:740px){
+  .screen{padding-top:calc(env(safe-area-inset-top, 0px) + 5px)}
+  .topbar{gap:3px;padding:5px 0 7px}
+  .topbar .brand img{width:min(52vw,195px);max-width:195px}
+  .topbar .mission-control-logo{width:min(70vw,270px);max-width:270px}
+  .masthead-strap{font-size:9px;letter-spacing:.14em}
+  .telemetry-block{margin:10px 0 7px}
+  .status-cell{min-height:52px}
+  .radar-wrap{width:min(76vw,33dvh,270px);margin-bottom:7px}
+  #radarMessage,.message-card,.compact-target,.compact-message,.message-card.comms-alert{height:66px;min-height:66px}
+  #radarMessage{flex-basis:66px}
+  .setup-page .setup-card,.setup-page.demo-scan-page .demo-scan-card,.setup-page.briefing-page .setup-card,.setup-page.audio-page .setup-card,.setup-page.radar-setup-page .setup-card{margin-top:8px;padding:14px 17px;grid-template-rows:60px 34px minmax(58px,auto) 1fr;row-gap:8px}
+  .setup-page .setup-icon,.setup-page .briefing-icon,.setup-page .audio-icon{width:60px;height:60px;padding:9px}
+  .setup-page .setup-card h1,.setup-page.demo-scan-page .demo-scan-card h1{font-size:25px;min-height:34px}
+  .setup-page .setup-card .support-copy,.setup-page.demo-scan-page .demo-scan-card p{font-size:14px;line-height:19px}
+  .sleigh-visual{min-height:105px;max-height:190px}
+  .sleigh-update-box .sleigh-systems-copy{font-size:9.5px}
+  .mission-head{padding-top:4px!important;padding-bottom:6px!important;margin-bottom:6px}
+  .mission-head h1,.diagnostics-head h1{font-size:24px}
+  .mission-head p.support-copy{font-size:13px;line-height:17px}
+  .power-road-scene{height:clamp(150px,25dvh,205px)!important}
+  .tanks{height:clamp(175px,26dvh,235px)!important}
+  .charge{height:52px;font-size:30px}
+  .comet-game{height:clamp(185px,28dvh,250px)!important}
+  .artifact-field{height:clamp(190px,29dvh,255px)!important}
+  .sync-lane{height:46px!important}
+  .jingle-stack{gap:5px}
+  .lando-gantry-art{max-height:25dvh}
+  .reaction-read{font-size:32px;min-height:35px}
+  .aurora-dial{width:min(100%,29dvh,270px)!important}
+}
+
+@media(max-width:360px){
+  .topbar .brand img{width:min(56vw,200px);max-width:200px}
+  .topbar .mission-control-logo{width:min(76vw,280px);max-width:280px}
+  .masthead-strap{font-size:9px}
+  .radar-wrap{width:min(82vw,35dvh,292px)}
+}

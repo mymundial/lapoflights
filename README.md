@@ -262,3 +262,12 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - `vercel.json` tells Vercel to deploy `dist/`.
 - `/admin` rewrites to the app entry point so the GPS Admin page works directly.
 - The downloadable ZIP is flattened so `index.html`, `package.json`, and `vercel.json` are at the archive root.
+
+## Pass 6.61 — compact viewport layout
+- Standard Mission Control masthead reduced globally across Radar, Missions, Sleigh, Comms, setup and mission/game pages. Landing hero remains unchanged.
+- Guest app screens now compose to the available mobile viewport rather than relying on page scrolling.
+- Missions and Comms retain intentional internal scrolling for the mission list and message feed respectively.
+- Radar telemetry, instrument and action panel condensed; radar diameter now responds to viewport height.
+- Setup, Sleigh and large game visuals use height-aware sizing with an additional short-phone breakpoint.
+- Bottom navigation reduced to reclaim vertical space.
+- Service-worker cache key bumped so redeployments pick up the new CSS immediately.

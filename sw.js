@@ -1,4 +1,4 @@
-const CACHE = 'mission-control-sleigh-pass6-v1';
+const CACHE = 'mission-control-sleigh-pass6-v61';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
