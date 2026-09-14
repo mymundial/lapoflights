@@ -293,3 +293,27 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Setup, Sleigh and large game visuals use height-aware sizing with an additional short-phone breakpoint.
 - Bottom navigation reduced to reclaim vertical space.
 - Service-worker cache key bumped so redeployments pick up the new CSS immediately.
+
+
+## Pass 6.68
+- Standardised all mini-game challenge title/subtitle typography.
+- Restored Audi rings proportions/scale on MC-02.
+- Kept MC-02 at 2 columns x 3 rows while enlarging and clipping diagnostic visuals safely.
+- Short-screen rules now compress the mini-game only, not challenge text.
+
+
+## Pass 6.69
+- MC-02 Velocity Vault diagnostics restored to a compact 2 × 3 bank layout without stretching to fill the page.
+- Audi branding explicitly centred and kept at its intended aspect ratio.
+- Diagnostic graphic windows are centred and isolated from labels/status copy.
+- Confirm Performance Data now uses the shared mission CTA sizing with no MC-02-specific shrink.
+- Global challenge title/subtitle sizing remains fixed across all mini-games.
+
+
+## Pass 6.70
+- MC-02 diagnostic labels are now centred as a complete label (for example `01 AERO`) rather than reading as left-weighted number/name pairs.
+- Mission number and diagnostic name use the same type size across all six scan banks, including short-screen breakpoints.
+- Diagnostic graphic canvases are normalised for more consistent visual weight.
+- Traction is deliberately zoomed within its SVG viewBox so it no longer appears undersized beside Aero, Stability, Power, Control and Recovery.
+- Recovery and Power visuals have been rebalanced to match the common diagnostic graphic scale.
+- Service-worker cache bumped to v70.
