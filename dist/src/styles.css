@@ -1597,7 +1597,7 @@ body.admin-mode button{
   min-height:0;
   height:100%;
   display:grid;
-  grid-template-rows:auto auto minmax(0,1fr) auto;
+  grid-template-rows:auto minmax(0,1fr) auto;
   overflow:hidden;
 }
 .telemetry-block{
@@ -1865,3 +1865,102 @@ body.admin-mode button{
 /* Admin is intentionally document-scrollable and does not inherit guest viewport locking. */
 body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visible}
 .admin-page .phone,.admin-page .screen{height:auto;min-height:100%;overflow:visible;display:block}
+
+
+/* Pass 6.64 — persistent navigation chrome + mobile alignment refinements */
+/* Standard bottom-nav pages keep the masthead and nav mounted while only the view changes.
+   This removes the one-frame masthead/image repaint flash when switching tabs. */
+.nav-view{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.nav-view>.radar-page{
+  flex:1 1 auto;
+  min-height:0;
+  height:100%;
+}
+
+/* Mission status remains a dedicated right-hand column on mobile. */
+.nav-view>.missions-list{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  margin:12px var(--page-gutter) 0;
+  padding:0 0 10px;
+  align-content:start;
+  grid-auto-rows:max-content;
+}
+.nav-view .mission-row{
+  grid-template-columns:34px minmax(0,1fr) auto;
+  align-items:center;
+}
+.nav-view .mission-row-copy{min-width:0}
+.nav-view .row-action{
+  grid-column:auto;
+  min-width:62px;
+  justify-items:end;
+  align-self:center;
+}
+.nav-view .row-status{
+  font-size:8px;
+  line-height:1;
+  white-space:nowrap;
+  text-align:right;
+}
+@media(max-width:350px){
+  .nav-view .mission-row{grid-template-columns:31px minmax(0,1fr) auto;gap:7px;padding:9px 9px}
+  .nav-view .row-action{min-width:54px}
+  .nav-view .row-status{font-size:7.5px;letter-spacing:.07em}
+  .nav-view .mission-row h3{font-size:15px}
+}
+
+/* Sleigh card is a distinct panel, not visually attached to the bottom nav. */
+.nav-view>.sleigh-card{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  margin:12px var(--page-gutter) 14px;
+  padding:12px 12px 10px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Comms: fixed radio card + naturally-sized messages in the independently scrolling feed. */
+.nav-view>.comms-radio.compact{
+  flex:0 0 auto;
+  margin:12px var(--page-gutter) 8px;
+  padding:11px 12px 10px;
+}
+.nav-view>.comms-feed{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  margin:0 var(--page-gutter) 14px;
+  padding:0;
+  position:relative;
+  display:grid;
+  gap:9px;
+  align-content:start;
+  grid-auto-rows:max-content;
+}
+.nav-view .comms-message,
+.nav-view .comms-empty{
+  height:auto;
+  min-height:0;
+  align-self:start;
+}
+
+/* Explicit masthead image geometry prevents layout collapse while image pixels decode. */
+.screen>.topbar{min-height:118px}
+.topbar .brand img{aspect-ratio:480 / 108;object-fit:contain}
+.topbar .mission-control-logo{aspect-ratio:1100 / 260;object-fit:contain}
+@media(max-height:720px){
+  .screen>.topbar{min-height:108px}
+}

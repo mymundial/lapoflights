@@ -343,6 +343,30 @@
   }
 
   function shell(content, nav=true){ return `<main class="phone ${nav?'':'no-nav'}"><div class="screen">${content}</div>${nav?navBar():''}</main>`; }
+  function navPageContent(){
+    if(state.nav==='missions') return renderMissions();
+    if(state.nav==='sleigh') return renderSleigh();
+    if(state.nav==='comms') return renderComms();
+    return renderRadar();
+  }
+  function navShell(){
+    return `<main class="phone"><div class="screen">${topBar()}<div class="nav-view" data-view="${state.nav}">${navPageContent()}</div></div>${navBar()}</main>`;
+  }
+  function syncNavChrome(){
+    document.querySelectorAll('[data-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.nav===state.nav));
+    updateCommsBadge();
+  }
+  function renderNavShell(){
+    const view=document.querySelector('.phone:not(.no-nav) .nav-view');
+    const masthead=document.querySelector('.phone:not(.no-nav) .screen>.topbar');
+    if(view&&masthead){
+      view.dataset.view=state.nav;
+      view.innerHTML=navPageContent();
+      syncNavChrome();
+      return;
+    }
+    app.innerHTML=navShell();
+  }
   function brand(){return `<div class="brand"><img src="./assets/silverstone-logo-landscape-cropped.png" alt="Silverstone"></div>`}
   function navIcon(id){
     const icons={
@@ -364,7 +388,7 @@
     const activationDistance=distanceToActivation(cp,state.distance);
     const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
     const condition=state.mode==='demo'?'DEMO':state.gpsCondition;
-    return `<section class="telemetry-block"><div class="telemetry-heading">Mission Telemetry</div><div class="status-strip panel">
+    return `<section class="telemetry-block"><div class="telemetry-heading">TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
       <div class="status-cell"><div class="status-label">Sleigh System</div><div class="status-value">${recovery()}%</div></div>
       <div class="status-cell"><div class="status-label">Next Checkpoint</div><div class="status-value">${distanceValue}</div></div>
@@ -398,10 +422,8 @@
     stopStatic();
     if(!state.onboarded){ app.innerHTML=shell(renderLaunch(),false); bindGlobal(); return; }
     if(state.missionOpen){ app.innerHTML=shell(renderMission(state.missionOpen),false); bindGlobal(); bindMission(state.missionOpen); return; }
-    if(state.nav==='radar') app.innerHTML=shell(renderRadar());
-    if(state.nav==='missions') app.innerHTML=shell(renderMissions());
-    if(state.nav==='sleigh') app.innerHTML=shell(renderSleigh());
-    if(state.nav==='comms'){markAllMessagesRead();app.innerHTML=shell(renderComms());}
+    if(state.nav==='comms') markAllMessagesRead();
+    renderNavShell();
     bindGlobal();
     if(state.nav==='radar'){
       updateRadarLive();
@@ -428,7 +450,7 @@
   function renderRadar(){
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
-    return `<section class="radar-page${modeClass}">${topBar()}${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar"><div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
+    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar"><div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
@@ -445,7 +467,7 @@
       const interaction=playable?` data-open-mission="${cp.id}" role="button" tabindex="0" aria-label="Open ${cp.name}"`:'';
       return `<div class="mission-row panel ${status==='COMPLETE'?'done':''} ${status==='AVAILABLE'?'available':''} ${playable?'interactive':''}"${interaction}><div class="mission-index">${cp.mc.replace('MC-','')}</div><div class="mission-row-copy"><div class="kicker">${cp.location}</div><h3>${cp.name}</h3></div><div class="row-action"><div class="row-status">${status}</div></div></div>`;
     }).join('');
-    return `${topBar()}<div class="list missions-list">${rows}</div>`;
+    return `<div class="list missions-list">${rows}</div>`;
   }
   function renderSleigh(){
     const r=recovery();
@@ -464,7 +486,7 @@
       {label:'Nav', online:r>=100}
     ];
     const systemLeds=systems.map(system=>`<div class="sleigh-system ${system.online?'online':''}" aria-label="${system.label} ${system.online?'online':'offline'}"><span class="sleigh-led" aria-hidden="true"></span><span class="sleigh-system-label">${system.label}</span></div>`).join('');
-    return `${topBar()}<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 development progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} development stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">Systems Online</div><div class="sleigh-system-grid">${systemLeds}</div></div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 development progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} development stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">Systems Online</div><div class="sleigh-system-grid">${systemLeds}</div></div></div>`;
   }
   function messageActivationLabel(message){
     if(message.key==='opening') return 'MISSION CONTROL';
@@ -483,7 +505,7 @@
     const radio=state.elfUnlocked
       ? `<section class="comms-radio panel tuned compact"><div class="comms-radio-head"><div><div class="kicker">ELF FM</div><h2>87.7</h2></div>${toggle}</div><div class="wave locked ${state.elfAudioOn?'live':''}">${'<i></i>'.repeat(28)}</div><div class="radio-state-line">Signal Locked</div></section>`
       : `<section class="comms-radio panel locked compact"><div class="comms-radio-head"><div><div class="kicker">ELF FM</div><h2>87.7</h2></div><button class="btn small primary" data-tune-elf>Tune In</button></div><div class="wave">${'<i></i>'.repeat(28)}</div><div class="radio-state-line muted">Signal Available</div></section>`;
-    return `${topBar()}${radio}<section class="comms-feed"><div class="comms-section-title"><span>Message Feed</span></div>${feed||'<div class="comms-empty panel">No transmissions received.</div>'}</section>`;
+    return `${radio}<section class="comms-feed"><div class="comms-section-title"><span>Message Feed</span></div>${feed||'<div class="comms-empty panel">No transmissions received.</div>'}</section>`;
   }
 
 
@@ -687,10 +709,14 @@
 
 
   function bindGlobal(){
-    document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{
-      if(b.dataset.nav==='comms') markAllMessagesRead();
-      set({nav:b.dataset.nav});
-    }));
+    document.querySelectorAll('[data-nav]').forEach(b=>{
+      if(b.dataset.navBound==='1') return;
+      b.dataset.navBound='1';
+      b.addEventListener('click',()=>{
+        if(b.dataset.nav==='comms') markAllMessagesRead();
+        set({nav:b.dataset.nav});
+      });
+    });
     document.querySelectorAll('[data-read-messages]').forEach(b=>b.addEventListener('click',()=>{markAllMessagesRead();set({nav:'comms'});}));
     document.querySelectorAll('[data-dismiss-messages]').forEach(b=>b.addEventListener('click',dismissMessageAlert));
     document.querySelectorAll('[data-tune-elf]').forEach(b=>b.addEventListener('click',()=>openElfTuner()));

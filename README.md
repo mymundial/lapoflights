@@ -1,7 +1,7 @@
 # Silverstone Mission Control — Pass 6.63
 
 - Rebuilds the mobile shell so the shared masthead is truly full-bleed to the top and sides of the device frame.
-- Centres the Mission Telemetry label above the telemetry panel.
+- Centres the TELEMETRY label above the telemetry panel.
 - Places the radar inside a dedicated flexible zone exactly between telemetry and the lower Mission Control state/action panel.
 - Lets the radar grow to the largest safe circular size permitted by the available height and width while retaining comfortable padding.
 - Keeps a deliberate gap between the lower Mission Control panel and bottom navigation.
