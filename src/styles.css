@@ -2329,3 +2329,278 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .mission-diagnostics .sensor-head{top:4px}
   .mission-diagnostics .sensor .state{bottom:4px!important}
 }
+
+/* Pass 6.72 — MC-02 micro-spacing refinement */
+/* Give the centred diagnostic graphic a little more breathing room beneath
+   its title without changing tile height, label sizing or CTA geometry. */
+.mission-diagnostics .sensor-viz{
+  top:53%!important;
+}
+
+/* Open the challenge header slightly around the Audi mark while preserving
+   the global challenge title/subtitle type system. */
+.mission-diagnostics .diagnostics-brand{
+  margin-top:8px;
+  margin-bottom:5px;
+}
+@media(max-height:740px){
+  .mission-diagnostics .diagnostics-brand{
+    margin-top:6px;
+    margin-bottom:4px;
+  }
+}
+@media(max-height:660px){
+  .mission-diagnostics .diagnostics-brand{
+    margin-top:5px;
+    margin-bottom:3px;
+  }
+}
+
+/* Pass 6.73 — MC-02 explicit title-to-icon spacing */
+/* Anchor each visual below the heading rather than vertically centring the
+   whole icon box. This guarantees a visible, consistent gap for every bank,
+   including the tall POWER bars and RECOVERY ring. */
+.mission-diagnostics .sensor-viz{
+  top:32px!important;
+  transform:translateX(-50%)!important;
+}
+@media(max-height:740px){
+  .mission-diagnostics .sensor-viz{
+    top:27px!important;
+  }
+}
+@media(max-height:660px){
+  .mission-diagnostics .sensor-viz{
+    top:24px!important;
+  }
+}
+
+/* Pass 6.74 — Demo Mode setup registration + direct MC-01 initiation flow */
+/* Keep the Demo Mode introduction in the same compact settings-card family as
+   Mission Briefing instead of allowing the card to stretch to the viewport. */
+.setup-page.demo-scan-page .demo-scan-card{
+  flex:0 0 auto;
+  min-height:390px;
+  height:auto;
+  margin:34px var(--page-gutter) 0;
+  padding:32px 24px 28px;
+  display:grid;
+  grid-template-rows:84px auto auto auto;
+  align-content:center;
+  row-gap:17px;
+}
+.setup-page.demo-scan-page .demo-scan-card .setup-actions{
+  align-self:auto;
+  margin-top:2px;
+}
+@media(max-width:390px){
+  .setup-page.demo-scan-page .demo-scan-card{
+    min-height:370px;
+    margin-top:24px;
+    padding:28px 20px 24px;
+    grid-template-rows:78px auto auto auto;
+    row-gap:15px;
+  }
+}
+@media(max-height:740px){
+  .setup-page.demo-scan-page .demo-scan-card{
+    min-height:330px;
+    margin-top:8px;
+    padding:18px 17px;
+    grid-template-rows:60px auto auto auto;
+    row-gap:10px;
+  }
+}
+
+/* Pass 6.75 — restore setup-card frame spacing */
+/* Setup screens should sit inside the viewport with the same visible frame gap
+   on every edge. Pass 6.63 left the lower margin at zero, which made tall
+   setup cards (most noticeably Mission Audio) run into the bottom edge. */
+.setup-page.audio-page .setup-card,
+.setup-page.briefing-page .setup-card,
+.setup-page.radar-setup-page .setup-card{
+  margin-bottom:12px;
+}
+@media(max-height:740px){
+  .setup-page.audio-page .setup-card,
+  .setup-page.briefing-page .setup-card,
+  .setup-page.radar-setup-page .setup-card{
+    margin-bottom:8px;
+  }
+}
+
+/* Pass 6.76 — make every setup screen use the compact Demo Mode card geometry */
+/* The page remains full-height, but the setup card must size to its content instead
+   of flexing to fill the remaining viewport. This deliberately overrides the
+   Pass 6.63 viewport-shell rules that introduced the regression. */
+.setup-page .setup-card,
+.setup-page.demo-scan-page .demo-scan-card,
+.setup-page.briefing-page .setup-card,
+.setup-page.audio-page .setup-card,
+.setup-page.radar-setup-page .setup-card{
+  flex:0 0 auto;
+  height:auto;
+  min-height:390px;
+  margin:34px var(--page-gutter) 0;
+  padding:32px 24px 28px;
+  display:grid;
+  grid-template-rows:84px auto auto auto;
+  align-content:center;
+  row-gap:17px;
+}
+.setup-page .setup-actions,
+.setup-page.demo-scan-page .demo-scan-card .setup-actions{
+  align-self:auto;
+  margin-top:2px;
+}
+
+@media(max-width:390px){
+  .setup-page .setup-card,
+  .setup-page.demo-scan-page .demo-scan-card,
+  .setup-page.briefing-page .setup-card,
+  .setup-page.audio-page .setup-card,
+  .setup-page.radar-setup-page .setup-card{
+    min-height:370px;
+    margin-top:24px;
+    padding:28px 20px 24px;
+    grid-template-rows:78px auto auto auto;
+    row-gap:15px;
+  }
+}
+
+@media(max-height:740px){
+  .setup-page .setup-card,
+  .setup-page.demo-scan-page .demo-scan-card,
+  .setup-page.briefing-page .setup-card,
+  .setup-page.audio-page .setup-card,
+  .setup-page.radar-setup-page .setup-card{
+    min-height:330px;
+    margin-top:8px;
+    padding:18px 17px;
+    grid-template-rows:60px auto auto auto;
+    row-gap:10px;
+  }
+}
+
+/* Pass 6.77 — lock setup-card registration so icons never move between screens */
+/*
+   Briefing, Audio, Live Radar and Demo Mode share one geometry. The icon is
+   anchored to a fixed first grid row from the top of the card; content length
+   and one-vs-two CTA layouts are not allowed to vertically re-centre the grid.
+*/
+.setup-page .setup-card,
+.setup-page.demo-scan-page .demo-scan-card,
+.setup-page.briefing-page .setup-card,
+.setup-page.audio-page .setup-card,
+.setup-page.radar-setup-page .setup-card{
+  flex:0 0 auto;
+  height:auto;
+  min-height:390px;
+  margin:24px var(--page-gutter) 0;
+  padding:30px 24px 26px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:68px auto auto auto;
+  align-content:start;
+  align-items:start;
+  row-gap:18px;
+}
+.setup-page .setup-icon,
+.setup-page .briefing-icon,
+.setup-page .audio-icon,
+.setup-page.demo-scan-page .demo-system-icon{
+  grid-row:1;
+  width:68px;
+  height:68px;
+  margin:0 auto;
+  align-self:start;
+  justify-self:center;
+  box-sizing:border-box;
+}
+.setup-page .setup-card h1,
+.setup-page.demo-scan-page .demo-scan-card h1{
+  grid-row:2;
+  margin:0;
+  min-height:0;
+  align-self:start;
+}
+.setup-page .setup-card .support-copy,
+.setup-page.demo-scan-page .demo-scan-card p{
+  grid-row:3;
+  margin:0 auto;
+  min-height:0;
+  align-self:start;
+}
+.setup-page .setup-actions,
+.setup-page.demo-scan-page .demo-scan-card .setup-actions{
+  grid-row:4;
+  align-self:start;
+  margin:0;
+}
+
+@media(max-width:390px){
+  .setup-page .setup-card,
+  .setup-page.demo-scan-page .demo-scan-card,
+  .setup-page.briefing-page .setup-card,
+  .setup-page.audio-page .setup-card,
+  .setup-page.radar-setup-page .setup-card{
+    min-height:370px;
+    margin-top:20px;
+    padding:26px 20px 24px;
+    grid-template-rows:68px auto auto auto;
+    row-gap:16px;
+  }
+}
+
+@media(max-height:740px){
+  .setup-page .setup-card,
+  .setup-page.demo-scan-page .demo-scan-card,
+  .setup-page.briefing-page .setup-card,
+  .setup-page.audio-page .setup-card,
+  .setup-page.radar-setup-page .setup-card{
+    min-height:330px;
+    margin-top:8px;
+    padding:18px 17px;
+    grid-template-rows:60px auto auto auto;
+    row-gap:10px;
+  }
+  .setup-page .setup-icon,
+  .setup-page .briefing-icon,
+  .setup-page .audio-icon,
+  .setup-page.demo-scan-page .demo-system-icon{
+    width:60px;
+    height:60px;
+  }
+}
+
+
+/* Pass 6.78 — Power Pulse iOS hold protection + stable high-speed scenery */
+.power-road-scene{
+  --speed-stretch:1;
+}
+.power-grass-plane{
+  transform:rotateX(58deg) scaleX(1.18);
+  will-change:background-position;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+.power-road-plane{
+  transform:rotateX(58deg);
+  will-change:background-position;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+.power-accelerator,
+.power-accelerator *{
+  -webkit-user-select:none !important;
+  user-select:none !important;
+  -webkit-touch-callout:none !important;
+  -webkit-tap-highlight-color:transparent;
+}
+.power-accelerator{
+  touch-action:none;
+}
+@media(max-width:360px){
+  .power-grass-plane{transform:rotateX(59deg) scaleX(1.18)}
+  .power-road-plane{transform:rotateX(59deg)}
+}

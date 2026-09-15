@@ -1,3 +1,23 @@
+## Pass 6.76 — compact setup cards restored
+
+- Fixes the setup-screen regression introduced by the viewport shell: Mission Briefing, Mission Audio and Enable Live Radar no longer stretch their cards to the bottom of the screen.
+- Applies the same content-driven card geometry already used by Demo Mode across all four setup screens.
+- Keeps the page itself full-height while leaving clear background space below each setup card.
+- No mission/game logic changes.
+
+## Pass 6.75 — setup card frame spacing
+
+- Restores the lower viewport gap on Mission Audio so the panel no longer touches the bottom edge.
+- Applies the same frame spacing to Mission Briefing and Enable Live Radar to keep the setup screens visually registered.
+- No mission/game logic changes.
+
+# Silverstone Mission Control — Pass 6.74
+
+- Restores the Demo Mode introduction to the compact settings-card layout used by Mission Briefing.
+- Removes the MC-01 placeholder activation page from the guest flow.
+- Start Activation now runs the System Initiation Scan immediately and advances the demo route to MC-02.
+- Bumps the service-worker cache to v74.
+
 # Silverstone Mission Control — Pass 6.63
 
 - Rebuilds the mobile shell so the shared masthead is truly full-bleed to the top and sides of the device frame.
@@ -324,3 +344,26 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - MC-02-only alignment correction: diagnostic title, icon and READY TO SCAN state are hard-centred against each tile.
 - Existing 2 × 3 layout, tile sizing, visual sizing and global challenge typography remain unchanged.
 - Service-worker cache bumped to v71.
+
+
+## Pass 6.72
+
+- MC-02 diagnostic graphics moved slightly lower inside each tile to create a consistent gap beneath all six centred titles, especially Power and Recovery.
+- Added a small amount of vertical breathing room above and below the Audi rings.
+- Tile heights, global challenge typography, diagnostic title sizing, CTA sizing and all other app screens remain unchanged.
+- Service-worker cache bumped to v72.
+
+
+## Pass 6.77
+- Locked Mission Briefing, Mission Audio, Enable Live Radar and Demo Mode to one shared setup-card geometry.
+- Setup icons now occupy a fixed first grid row and cannot move vertically when copy length or CTA count changes.
+- Removed vertical re-centring from the setup-card grid; title, copy and actions flow downward from the anchored icon instead.
+- Kept the compact content-driven cards and visible page space below them from Pass 6.76.
+- Service-worker cache bumped to v77.
+
+
+## Pass 6.78
+- MC-04 Power Pulse: removed speed-dependent scaling from the transformed road/grass planes to prevent high-speed clipping/flicker on iOS Safari.
+- Speed is now conveyed through bounded texture travel, speed lines and existing car motion while the perspective geometry remains fixed.
+- Added iOS long-press protections to the accelerator control (`-webkit-user-select`, `-webkit-touch-callout`, plus context/select/drag suppression) so press-and-hold no longer invokes text magnification/selection.
+- Service-worker cache bumped to v78.

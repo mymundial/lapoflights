@@ -13,7 +13,7 @@
 
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
-    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'Activation Placeholder', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
+    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'System Initiation Scan', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
     {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Performance Scan', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
     {id:'luffield', mc:'MC-03', location:'Luffield', name:'ELF FM', type:'commsrelay', playable:true, core:false, mission:'Signal Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
     {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'power', playable:true, core:true, mission:'Acceleration Run', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
@@ -147,6 +147,7 @@
         messages,
         routeIndex,
         routeRevision:5,
+        missionOpen:parsed.missionOpen==='entry'?null:(parsed.missionOpen||null),
         elfUnlocked:Boolean(parsed.elfUnlocked),
         elfAudioOn:false,
         // Never trust a persisted in-range lock after a refresh. Live GPS must
@@ -519,7 +520,7 @@
   }
   function missionInstruction(type){
     return ({
-      activation:'Circuit Entry activation is reserved for the final arrival animation.',
+      activation:'Run the system initiation scan and bring Santa-1 recovery systems online.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
@@ -541,7 +542,7 @@
   }
   function missionBody(cp){
     switch(cp.type){
-      case 'activation': return activationBody(cp);
+      case 'activation': return '';
       case 'diagnostics': return diagnosticsBody();
       case 'radio': return radioBody();
       case 'commsrelay': return commsRelayBody();
@@ -558,7 +559,6 @@
       default:return '';
     }
   }
-  function activationBody(cp){return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">↯</div><div class="kicker">${cp.location} / Activation Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Circuit Entry</h2><p class="sub">The final Circuit Entry experience is reserved for an automatic full-screen energy-surge animation. This placeholder keeps the mission slot and completion flow available while the animation is developed.</p><button class="btn primary wide" style="margin-top:16px" id="runEntryPlaceholder">Run Placeholder Activation</button></div>`}
   function diagnosticsBody(){
     const sensors=[
       {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation"><path class="aero-car" d="M50 18h20l8 10 4 23H38l4-23 8-10Z"/><path class="aero-flow f1" d="M4 15 C26 12 29 8 45 8 S82 9 116 15"/><path class="aero-flow f2" d="M2 35 C22 35 28 24 41 24 S79 24 118 35"/><path class="aero-flow f3" d="M4 55 C26 58 31 62 47 62 S83 60 116 55"/></svg>`},
@@ -749,11 +749,19 @@
     const idx=checkpointIndex(id);
     const allowed=state.completed.includes(id)||state.available.includes(id)||idx<state.routeIndex||(idx===state.routeIndex&&state.targetInRange);
     if(!allowed){toast('Mission is not available yet.');return;}
+    // MC-01 is an activation sequence rather than a mini-game. Starting it
+    // launches the system initiation scan immediately; there is no interim
+    // placeholder mission screen.
+    if(id==='entry'&&!state.completed.includes('entry')){
+      ping(780,.06,.04);haptic(25);
+      triggerCircuitEntry();
+      return;
+    }
     ping(780,.06,.04);haptic(25);
     set({missionOpen:id,missionReturnNav:state.nav});
   }
   function showEntrySurge(){
-    const el=document.createElement('div');el.className='surge';el.innerHTML=`<div class="surge-copy"><div class="kicker">Energy Surge Detected</div><h1>Santa-1 Systems Initiated</h1><p>Vehicle energy generated on track has created enough power to initiate Santa's sleigh systems.</p></div>`;document.body.appendChild(el);ping(180,.25,.08);setTimeout(()=>{ping(520,.18,.05);haptic([50,40,90]);},600);setTimeout(()=>el.remove(),2200);
+    const el=document.createElement('div');el.className='surge';el.innerHTML=`<div class="surge-copy"><div class="kicker">System Initiation Scan</div><h1>Santa-1 Systems Initiated</h1><p>Vehicle energy generated on track has created enough power to initiate Santa's sleigh systems.</p></div>`;document.body.appendChild(el);ping(180,.25,.08);setTimeout(()=>{ping(520,.18,.05);haptic([50,40,90]);},600);setTimeout(()=>el.remove(),2200);
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
@@ -803,10 +811,17 @@
   }
   function triggerCircuitEntry(){
     const cp=current(); if(!cp||cp.id!=='entry') return;
+    if(state.mode==='demo') clearDemo();
     if(!state.completed.includes('entry')) state.completed=[...state.completed,'entry'];
+    state.available=state.available.filter(id=>id!=='entry');
     state.routeIndex=nextRouteIndex(state.routeIndex);state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SYSTEMS ONLINE';
     resetGeofenceRuntime();save();updateRadarLive();showEntrySurge();
-    setTimeout(()=>{addMessage('complete:entry','MISSION CONTROL','SANTA-1 SYSTEMS INITIATED','Energy generated by vehicles on track has provided enough power to begin the recovery sequence.','MC-01');if(lastGps)processGps(lastGps,true);},2250);
+    if(state.mode==='demo') demoHoldUntil=Date.now()+2600;
+    setTimeout(()=>{
+      addMessage('complete:entry','MISSION CONTROL','SANTA-1 SYSTEMS INITIATED','Energy generated by vehicles on track has provided enough power to begin the recovery sequence.','MC-01');
+      if(state.mode==='demo') rearmDemoRoute(650);
+      else if(lastGps) processGps(lastGps,true);
+    },2250);
   }
 
   function startLiveExperience(){
@@ -1060,10 +1075,6 @@
   }
   function bindMission(id){
     const cp=id==='elf-radio'?ELF_RADIO_MISSION:CHECKPOINTS.find(c=>c.id===id); if(!cp) return;
-    if(cp.type==='activation'){
-      const btn=document.getElementById('runEntryPlaceholder');
-      if(btn) btn.onclick=()=>{showEntrySurge();setTimeout(()=>showCompletion('Santa-1 Systems Initiated','Circuit Entry has provided enough energy to initiate the Santa-1 recovery sequence.'),1500);};
-    }
     if(cp.type==='diagnostics') bindDiagnostics();
     if(cp.type==='radio') bindRadio();
     if(cp.type==='commsrelay') bindCommsRelay();
@@ -1284,7 +1295,7 @@
     powerWinAudio.preload='auto';
     powerWinAudio.volume=.92;
     let audioFadeRaf=0;
-    let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,raf=0,finished=false;
+    let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,grassPhase=0,raf=0,finished=false;
     let thresholdStep=0;
 
     function cancelPowerAudioFade(){
@@ -1352,16 +1363,20 @@
     function updateRoad(dt,norm,now){
       // Scroll the road and grass textures together so they share one ground plane
       // and meet the sky on exactly the same horizon line.
-      roadPhase=(roadPhase+(dt*.00205)*speed)%1000;
+      const travel=(dt*.00205)*speed;
+      // Keep the perspective planes geometrically fixed. Speed is communicated by
+      // texture travel, speed lines and car motion instead of scaling the 3D planes,
+      // which prevents iOS Safari from clipping/flickering them at high velocity.
+      roadPhase=(roadPhase+travel)%470;
+      grassPhase=(grassPhase+travel*.72)%270;
       road.style.setProperty('--road-scroll',`${roadPhase.toFixed(2)}px`);
-      road.style.setProperty('--grass-scroll',`${(roadPhase*.72).toFixed(2)}px`);
-      road.style.setProperty('--speed-stretch',(1+norm*.7).toFixed(3));
+      road.style.setProperty('--grass-scroll',`${grassPhase.toFixed(2)}px`);
       const jitter=Math.sin(now*.026)*(norm*1.35)+Math.sin(now*.051)*(norm*.45);
       car.style.transform=`translateX(-50%) translateX(${jitter.toFixed(2)}px) translateY(${(norm*-1.8).toFixed(2)}px) scale(${(1+norm*.025).toFixed(3)})`;
       speedLines.forEach((line,i)=>{
         const alpha=Math.max(0,(norm-.55)*1.8)*(.25+((i%4)/5));
         line.style.opacity=String(Math.min(.72,alpha));
-        line.style.transform=`translateY(${((roadPhase*.34+i*19)%150).toFixed(1)}px) scaleY(${(1+norm*.9).toFixed(2)})`;
+        line.style.transform=`translateY(${(((now*.085*Math.max(.2,norm))+i*19)%150).toFixed(1)}px) scaleY(${(1+norm*.9).toFixed(2)})`;
       });
     }
 
@@ -1440,6 +1455,11 @@
     button.addEventListener('pointerdown',press);
     button.addEventListener('pointerup',release);
     button.addEventListener('pointercancel',release);
+    // iOS Safari can treat a sustained press as text selection / callout even on
+    // controls. Suppress those browser gestures without changing the game input.
+    button.addEventListener('contextmenu',e=>e.preventDefault());
+    button.addEventListener('selectstart',e=>e.preventDefault());
+    button.addEventListener('dragstart',e=>e.preventDefault());
     button.addEventListener('lostpointercapture',()=>setHolding(false));
     button.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();setHolding(true);}});
     button.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();setHolding(false);}});
